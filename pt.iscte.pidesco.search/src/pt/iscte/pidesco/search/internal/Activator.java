@@ -1,4 +1,4 @@
-package pt.iscte.pidesco.search;
+package pt.iscte.pidesco.search.internal;
 
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
