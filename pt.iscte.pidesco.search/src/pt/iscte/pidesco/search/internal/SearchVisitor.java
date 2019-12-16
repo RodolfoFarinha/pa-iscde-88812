@@ -28,6 +28,8 @@ public class SearchVisitor implements Visitor {
 		File file = classElement.getFile();
 		
 		SearchAtsVisitor searchAtsVisitor = new SearchAtsVisitor();
+		searchAtsVisitor.readFile(file);
+		
 		javaEditorServices.parseFile(file, searchAtsVisitor);
 		
 		System.out.println(searchAtsVisitor.toString());		
