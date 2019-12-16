@@ -42,8 +42,7 @@ public class SearchAtsVisitor extends ASTVisitor {
 	    	}
 	    } catch (FileNotFoundException e) {
 	        e.printStackTrace();  
-	    }
-	    
+	    }    
 	}
 	
 	@Override
@@ -53,14 +52,6 @@ public class SearchAtsVisitor extends ASTVisitor {
 	    types.add(line + " - " + name);	    
 		return true;
 	}
-	
-	/*@Override
-	public boolean visit(ConstructorDeclaration node) {
-		String name = node.toString();
-	    int line = sourceLine(node);
-	    constructors.add(line + " - " + name);
-		return true;
-	}*/
 	
 	@Override
 	public boolean visit(MethodDeclaration node) {
@@ -78,11 +69,6 @@ public class SearchAtsVisitor extends ASTVisitor {
 			VariableDeclarationFragment var = (VariableDeclarationFragment) o;				
 			String name = var.getName().toString();
 			int line = sourceLine(node);
-			
-			/*if(name.equals("PLUGIN_ID")) {
-				result.add(name);
-				System.out.println(name);
-			}*/
 			
 			fields.add(line + " - " + name);
 		}

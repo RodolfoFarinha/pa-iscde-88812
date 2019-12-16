@@ -21,6 +21,8 @@ public class SearchVisitor implements Visitor {
 	@Override
 	public void visitClass(ClassElement classElement) {
 
+		SearchView.showTree(classElement);
+		
 		BundleContext context = Activator.getContext();
 		ServiceReference<JavaEditorServices> serviceReference = context.getServiceReference(JavaEditorServices.class);
 		JavaEditorServices javaEditorServices = context.getService(serviceReference);

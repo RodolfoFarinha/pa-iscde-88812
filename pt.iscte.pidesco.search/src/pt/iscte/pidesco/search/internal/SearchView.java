@@ -6,11 +6,14 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Map;
 
+import javax.swing.ImageIcon;
+
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.text.ITextSelection;
+import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -29,21 +32,30 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.swt.widgets.Tree;
+import org.eclipse.swt.widgets.TreeItem;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 
 import pt.iscte.pidesco.extensibility.PidescoView;
 import pt.iscte.pidesco.javaeditor.service.JavaEditorServices;
+import pt.iscte.pidesco.projectbrowser.model.ClassElement;
+import pt.iscte.pidesco.projectbrowser.model.PackageElement;
 import pt.iscte.pidesco.projectbrowser.model.SourceElement;
 import pt.iscte.pidesco.projectbrowser.service.ProjectBrowserListener;
 import pt.iscte.pidesco.projectbrowser.service.ProjectBrowserServices;
 
 public class SearchView implements PidescoView {
-
+	public static Tree tree;
+	public static Image packageIcon;
+	public static Image classIcon;
+	
 	@Override
 	public void createContents(Composite viewArea, Map<String, Image> imageMap) {
 
 		Label space;
+		packageIcon = imageMap.get("package.gif");
+		classIcon = imageMap.get("class.gif");
 
 		viewArea.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false));
 		viewArea.setLayout(new GridLayout(6, false));
@@ -183,5 +195,67 @@ public class SearchView implements PidescoView {
 
 			}
 		});
+		
+		tree = new Tree(viewArea, SWT.BORDER | SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
+		tree.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 6, 1));
+		
+		/*TreeItem item1 = new TreeItem(tree, SWT.NONE, 0);
+		  item1.setText("Task1");
+		  item1.setImage(packageIcon);
+		  
+		  TreeItem item1a = new TreeItem(item1, SWT.NONE, 0);
+		  item1a.setImage(classIcon);
+		  item1a.setText("Task 1.1");
+		  
+		  TreeItem item1b = new TreeItem(item1, SWT.NONE, 1);
+		  item1b.setImage(classIcon);
+		  item1b.setText("Task 1.2");
+		 
+		  
+		 for (int i = 0; i < 12; i++) {
+		      TreeItem item = new TreeItem(tree, SWT.NONE);
+		      item.setImage(packageIcon);
+		      item.setText("Item " + i);
+		    }*/
+	}
+	
+	public static void showTree(ClassElement classElement) {
+			
+		String packageClass = classElement.getClass().getPackage().getName();
+		String itemTitle = packageClass.substring(0,packageClass.indexOf("."));
+		boolean createItem = true;
+		
+		/*if(itemTitle.indexOf(".") > 0)
+			createItem = false;*/
+		
+		for(TreeItem treeItem : tree.getItems()) {
+			if(itemTitle.equals(treeItem.getText()))
+					createItem = false;
+		}
+		
+		if(createItem) {
+			TreeItem packageItem = new TreeItem(tree, SWT.NONE, 0);
+			packageItem.setText(itemTitle);
+			packageItem.setImage(packageIcon);
+			
+			TreeItem classItem = new TreeItem(packageItem, SWT.NONE, 0);
+			classItem.setText(classElement.getName());
+			classItem.setImage(classIcon);
+		}
+		else{
+			for(TreeItem treeItem : tree.getItems()) {
+				if(itemTitle.equals(treeItem.getText())) {
+					TreeItem classItem = new TreeItem(treeItem, SWT.NONE, 0);
+					classItem.setText(classElement.getName());
+					classItem.setImage(classIcon);
+				}
+			}
+		}
+	}
+	
+	private void treeItem(TreeItem tree) {
+		for(TreeItem treeItem : tree.getItems()) {
+			
+		}
 	}
 }
