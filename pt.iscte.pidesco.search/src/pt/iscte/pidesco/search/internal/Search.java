@@ -32,8 +32,9 @@ public class Search {
 		
 		PackageElement packageElement = projectBrowserServices.getRootPackage();		
 		
-		SearchVisitor searchVisitor = new SearchVisitor();
-		
+		SearchVisitor searchVisitor = new SearchVisitor();	
 		packageElement.traverse(searchVisitor);
+		
+		SearchView.showTree(searchVisitor.getPackageClass());
 	}
 }

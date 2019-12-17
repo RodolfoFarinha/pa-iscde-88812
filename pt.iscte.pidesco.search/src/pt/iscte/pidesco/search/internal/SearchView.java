@@ -1,59 +1,39 @@
 package pt.iscte.pidesco.search.internal;
 
-import java.awt.Canvas;
-import java.awt.List;
-import java.io.File;
-import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
-import javax.swing.ImageIcon;
-
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IConfigurationElement;
-import org.eclipse.core.runtime.IExtensionRegistry;
-import org.eclipse.core.runtime.Platform;
-import org.eclipse.jface.text.ITextSelection;
-import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.layout.RowData;
-import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.ServiceReference;
 
 import pt.iscte.pidesco.extensibility.PidescoView;
-import pt.iscte.pidesco.javaeditor.service.JavaEditorServices;
-import pt.iscte.pidesco.projectbrowser.model.ClassElement;
-import pt.iscte.pidesco.projectbrowser.model.PackageElement;
-import pt.iscte.pidesco.projectbrowser.model.SourceElement;
-import pt.iscte.pidesco.projectbrowser.service.ProjectBrowserListener;
-import pt.iscte.pidesco.projectbrowser.service.ProjectBrowserServices;
 
 public class SearchView implements PidescoView {
-	public static Tree tree;
-	public static Image packageIcon;
-	public static Image classIcon;
-	
+
+	private static Tree tree;
+	private static Image searchIcon, packageIcon, classIcon;
+	private static String packageName, itemName, className;
+	private static List<String> packageClass;
+	private static TreeItem searchItem;
+	private static boolean treeBool;
+	private static int i;
+
 	@Override
 	public void createContents(Composite viewArea, Map<String, Image> imageMap) {
 
 		Label space;
+		searchIcon = imageMap.get("find_obj.gif");
 		packageIcon = imageMap.get("package.gif");
 		classIcon = imageMap.get("class.gif");
 
@@ -161,19 +141,18 @@ public class SearchView implements PidescoView {
 
 		Button cancelButton = new Button(composite3, SWT.NONE);
 		cancelButton.setText("    Cancel     ");
-		
-		
+
 		replaceButton.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
-						
+
 			}
 		});
 
 		searchButton.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 
-				boolean [] conditions = new boolean[9];
-				
+				boolean[] conditions = new boolean[9];
+
 				conditions[0] = caseSensitive.getSelection();
 				conditions[1] = equals.getSelection();
 				conditions[2] = contains.getSelection();
@@ -183,10 +162,10 @@ public class SearchView implements PidescoView {
 				conditions[6] = constructor.getSelection();
 				conditions[7] = method.getSelection();
 				conditions[8] = field.getSelection();
-				
+
 				Search search = new Search(conditions);
 				search.search();
-				
+
 			}
 		});
 
@@ -195,67 +174,65 @@ public class SearchView implements PidescoView {
 
 			}
 		});
-		
+
 		tree = new Tree(viewArea, SWT.BORDER | SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
 		tree.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 6, 1));
-		
-		/*TreeItem item1 = new TreeItem(tree, SWT.NONE, 0);
-		  item1.setText("Task1");
-		  item1.setImage(packageIcon);
-		  
-		  TreeItem item1a = new TreeItem(item1, SWT.NONE, 0);
-		  item1a.setImage(classIcon);
-		  item1a.setText("Task 1.1");
-		  
-		  TreeItem item1b = new TreeItem(item1, SWT.NONE, 1);
-		  item1b.setImage(classIcon);
-		  item1b.setText("Task 1.2");
-		 
-		  
-		 for (int i = 0; i < 12; i++) {
-		      TreeItem item = new TreeItem(tree, SWT.NONE);
-		      item.setImage(packageIcon);
-		      item.setText("Item " + i);
-		    }*/
 	}
-	
-	public static void showTree(ClassElement classElement) {
-			
-		String packageClass = classElement.getClass().getPackage().getName();
-		String itemTitle = packageClass.substring(0,packageClass.indexOf("."));
-		boolean createItem = true;
-		
-		/*if(itemTitle.indexOf(".") > 0)
-			createItem = false;*/
-		
-		for(TreeItem treeItem : tree.getItems()) {
-			if(itemTitle.equals(treeItem.getText()))
-					createItem = false;
+
+	public static void showTree(List<String> packageclass) {
+		packageClass = packageclass;
+
+		searchItem = new TreeItem(tree, SWT.NONE, 0);
+		searchItem.setText("Search Results");
+		searchItem.setImage(searchIcon);
+
+		i = 0;
+		treeBool = true;
+		treeItem(searchItem);
+	}
+
+	private static void treeItem(TreeItem tree) {
+		if (treeBool) {
+			packageName = packageClass.get(i).substring(0, packageClass.get(i).lastIndexOf("..") + 2);
+			itemName = packageClass.get(i).substring(0, packageClass.get(i).indexOf("."));
+			className = packageClass.get(i).substring(packageClass.get(i).lastIndexOf("..") + 2);
+
+			i++;
+			treeBool = false;
 		}
-		
-		if(createItem) {
-			TreeItem packageItem = new TreeItem(tree, SWT.NONE, 0);
-			packageItem.setText(itemTitle);
-			packageItem.setImage(packageIcon);
-			
-			TreeItem classItem = new TreeItem(packageItem, SWT.NONE, 0);
-			classItem.setText(classElement.getName());
-			classItem.setImage(classIcon);
-		}
-		else{
-			for(TreeItem treeItem : tree.getItems()) {
-				if(itemTitle.equals(treeItem.getText())) {
-					TreeItem classItem = new TreeItem(treeItem, SWT.NONE, 0);
-					classItem.setText(classElement.getName());
-					classItem.setImage(classIcon);
+
+		for (TreeItem treeItem : tree.getItems()) {
+			if (itemName.equals(treeItem.getText())) {
+				packageName = packageName.substring(packageName.indexOf(".") + 1);
+				if (packageName.length() != 1) {
+					itemName = packageName.substring(0, packageName.indexOf("."));
+					treeItem(treeItem);
+				} else {
+					createClassItem(treeItem);
+					treeBool = true;
+					if(i < packageClass.size())
+						treeItem(searchItem);
+					else
+						return;
 				}
 			}
 		}
-	}
-	
-	private void treeItem(TreeItem tree) {
-		for(TreeItem treeItem : tree.getItems()) {
-			
+		
+		if(!treeBool) {
+			createPackageItem(tree);
+			treeItem(tree);
 		}
+	}
+
+	private static void createPackageItem(TreeItem treeItem) {
+		TreeItem packageItem = new TreeItem(treeItem, SWT.NONE, 0);
+		packageItem.setText(itemName);
+		packageItem.setImage(packageIcon);
+	}
+
+	private static void createClassItem(TreeItem packageItem) {
+		TreeItem classItem = new TreeItem(packageItem, SWT.NONE, 0);
+		classItem.setText(className);
+		classItem.setImage(classIcon);
 	}
 }
