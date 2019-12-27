@@ -3,6 +3,9 @@ package pt.iscte.pidesco.search.internal;
 import java.awt.Window.Type;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.LineNumberReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -20,68 +23,172 @@ import pt.iscte.pidesco.projectbrowser.model.ClassElement;
 
 public class SearchAtsVisitor extends ASTVisitor {
 
-	List<String> types = new ArrayList<String>();
-	List<String> fileLines = new ArrayList<String>();
-	List<String> constructors = new ArrayList<String>();
-	List<String> methods = new ArrayList<String>();
-	List<String> fields = new ArrayList<String>();
-	  
-	public void readFile(File file) {
-		Scanner scannerLine = null;
-	    try {
-	    	scannerLine = new Scanner(file);    	
-	    	while (scannerLine.hasNextLine()) {
-	    		List<String> line = new ArrayList<String>();
-	            Scanner scannerWord = new Scanner(scannerLine.nextLine());
-	            while (scannerWord.hasNext()) {
-	            	String s = scannerWord.next();
-	            	line.add(s);
-	            }
-	            
-	            fileLines.add(line.toString());
-	    	}
-	    } catch (FileNotFoundException e) {
-	        e.printStackTrace();  
-	    }    
-	}
+	private boolean[] conditions;
+	private String word, packageItem;
+	private SearchVisitor searchVisitor;
+	private ClassElement classElement;
+
 	
+	public SearchAtsVisitor(SearchVisitor searchvisitor, ClassElement classElement, boolean[] conditions, String word, String packageItem) {
+		this.searchVisitor = searchvisitor;
+		this.classElement = classElement;
+		this.conditions = conditions;
+		this.word = word;
+		this.packageItem = packageItem;
+	}
+
+	public void readFile(File file) {
+		if (conditions[5]) {
+			try {
+				LineNumberReader reader = new LineNumberReader(new FileReader(file));
+				String line;
+
+				while ((line = reader.readLine()) != null) {
+					String lineWords = "";
+					Scanner scanner = new Scanner(line);
+					scanner.useDelimiter("\\.|,|\\(|\\)|\\s+|;");
+
+					while (scanner.hasNext()) {
+						
+						String scannerWord = scanner.next();
+						
+						if(conditions[0] && conditions[1] && scannerWord.equals(word)) {
+							lineWords = lineWords + scannerWord + " ";
+						}
+						else if(!conditions[0] && conditions[1] && scannerWord.equalsIgnoreCase(word)) {
+							lineWords = lineWords + scannerWord + " ";
+						}
+						else if(conditions[2] && scannerWord.contains(word)) {
+							lineWords = lineWords + scannerWord + " ";
+						}
+						else if(conditions[3] && scannerWord.startsWith(word)) {
+							lineWords = lineWords + scannerWord + " ";
+						}
+						else if(conditions[4] && scannerWord.endsWith(word)) {			
+							lineWords = lineWords + scannerWord + " ";
+						}
+					}
+					if(lineWords.trim().length() > 0) {
+						addClass();
+						searchVisitor.fileLines.add(classElement.getName() + "::Line: " + reader.getLineNumber() + " - " + lineWords.trim());
+					}
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
 	@Override
 	public boolean visit(TypeDeclaration node) {
-		String name = node.getName().toString();
-	    int line = sourceLine(node);
-	    types.add(line + " - " + name);	    
-		return true;
-	}
-	
-	@Override
-	public boolean visit(MethodDeclaration node) {
-		String name = node.getName().toString();
-	    int line = sourceLine(node);
-	    methods.add(line + " - " + name);
-		return true;
-	}
-	
-	@Override
-	public boolean visit(FieldDeclaration node) {
-		
-		for(Object o : node.fragments()) {
-		
-			VariableDeclarationFragment var = (VariableDeclarationFragment) o;				
-			String name = var.getName().toString();
+		if (conditions[6]) {
+			
+			String name = node.getName().toString();
 			int line = sourceLine(node);
 			
-			fields.add(line + " - " + name);
+			if(conditions[0] && conditions[1] && name.equals(word)) {
+				addClass();
+				searchVisitor.types.add(classElement.getName() + "::Line: " + line + " - " + name);
+			}
+			else if(!conditions[0] && conditions[1] && name.equalsIgnoreCase(word)) {
+				addClass();
+				searchVisitor.types.add(classElement.getName() + "::Line: " + line + " - " + name);
+			}
+			else if(conditions[2] && name.contains(word)) {
+				addClass();
+				searchVisitor.types.add(classElement.getName() + "::Line: " + line + " - " + name);
+			}
+			else if(conditions[3] && name.startsWith(word)) {
+				addClass();
+				searchVisitor.types.add(classElement.getName() + "::Line: " + line + " - " + name);
+			}
+			else if(conditions[4] && name.endsWith(word)) {
+				addClass();
+				searchVisitor.types.add(classElement.getName() + "::Line: " + line + " - " + name);
+			}
 		}
+		return true;
+	}
 
+	@Override
+	public boolean visit(MethodDeclaration node) {
+		if (conditions[7]) {
+			
+			String name = node.getName().toString();
+			int line = sourceLine(node);
+			
+			if(conditions[0] && conditions[1] && name.equals(word)) {
+				addClass();
+				searchVisitor.methods.add(classElement.getName() + "::Line: " + line + " - " + name);
+			}
+			else if(!conditions[0] && conditions[1] && name.equalsIgnoreCase(word)) {
+				addClass();
+				searchVisitor.methods.add(classElement.getName() + "::Line: " + line + " - " + name);
+			}
+			else if(conditions[2] && name.contains(word)) {
+				addClass();
+				searchVisitor.methods.add(classElement.getName() + "::Line: " + line + " - " + name);
+			}
+			else if(conditions[3] && name.startsWith(word)) {
+				addClass();
+				searchVisitor.methods.add(classElement.getName() + "::Line: " + line + " - " + name);
+			}
+			else if(conditions[4] && name.endsWith(word)) {
+				addClass();
+				searchVisitor.methods.add(classElement.getName() + "::Line: " + line + " - " + name);
+			}
+		}
+		return true;
+	}
+
+	@Override
+	public boolean visit(FieldDeclaration node) {
+		if (conditions[8]) {
+			for (Object o : node.fragments()) {
+				VariableDeclarationFragment var = (VariableDeclarationFragment) o;
+				String name = var.getName().toString();
+				int line = sourceLine(node);
+
+				if(conditions[0] && conditions[1] && name.equals(word)) {
+					addClass();
+					searchVisitor.fields.add(classElement.getName() + "::Line: " + line + " - " + name);
+				}
+				else if(!conditions[0] && conditions[1] && name.equalsIgnoreCase(word)) {
+					addClass();
+					searchVisitor.fields.add(classElement.getName() + "::Line: " + line + " - " + name);
+				}
+				else if(conditions[2] && name.contains(word)) {
+					addClass();
+					searchVisitor.fields.add(classElement.getName() + "::Line: " + line + " - " + name);
+				}
+				else if(conditions[3] && name.startsWith(word)) {
+					addClass();
+					searchVisitor.fields.add(classElement.getName() + "::Line: " + line + " - " + name);
+				}
+				else if(conditions[4] && name.endsWith(word)) {
+					addClass();
+					searchVisitor.fields.add(classElement.getName() + "::Line: " + line + " - " + name);
+				}
+			}
+		}
 		return false;
 	}
 	
-	private static int sourceLine(ASTNode node) {
+	private void addClass() {
+		
+		String pathClass = classElement.getFile().getPath().substring(classElement.getFile().getPath().lastIndexOf("pt"), classElement.getFile().getPath().lastIndexOf("\\")).replace("\\", ".");		
+		
+		if(!packageItem.isEmpty() && !pathClass.equals(packageItem))
+			return;
+		else {
+			if(!searchVisitor.packageClass.contains(pathClass + ".." + classElement.getName())) {		
+				searchVisitor.packageClass.add(pathClass + ".." + classElement.getName());
+				searchVisitor.pathClass.add(classElement.getFile().getPath());	
+			}
+		}
+	}
+
+	private int sourceLine(ASTNode node) {
 		return ((CompilationUnit) node.getRoot()).getLineNumber(node.getStartPosition());
 	}
-	
-	@Override
-    public String toString() { 
-        return String.format("Tipos:" + types + "\n" + "Linhas:" + fileLines + "\n" + "Construtores:" + constructors + "\n" + "Metodos:" + methods + "\n" + "Campos:" + fields); 
-    } 
 }

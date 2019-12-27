@@ -14,10 +14,20 @@ import pt.iscte.pidesco.projectbrowser.model.PackageElement.Visitor;
 
 public class SearchVisitor implements Visitor {
 
-	private List<String> packageClass = new ArrayList<String>();
+	private boolean [] conditions;
+	private String word, packageItem;
 	
-	public List<String> getPackageClass() {
-		return packageClass;
+	List<String> pathClass = new ArrayList<String>();
+	List<String> packageClass = new ArrayList<String>();
+	List<String> types = new ArrayList<String>();
+	List<String> fileLines = new ArrayList<String>();
+	List<String> methods = new ArrayList<String>();
+	List<String> fields = new ArrayList<String>();
+	
+	public SearchVisitor(boolean[] conditions, String word, String packageItem) {
+		this.conditions = conditions;
+		this.word = word;
+		this.packageItem = packageItem;
 	}
 
 	@Override
@@ -34,13 +44,9 @@ public class SearchVisitor implements Visitor {
 		
 		File file = classElement.getFile();
 		
-		SearchAtsVisitor searchAtsVisitor = new SearchAtsVisitor();
+		SearchAtsVisitor searchAtsVisitor = new SearchAtsVisitor(this, classElement, conditions, word, packageItem);
 		searchAtsVisitor.readFile(file);
 		
 		javaEditorServices.parseFile(file, searchAtsVisitor);
-		
-		System.out.println(searchAtsVisitor.toString());	
-		
-		packageClass.add(classElement.getClass().getPackage().getName() + ".." + classElement.getName());
 	}
 }

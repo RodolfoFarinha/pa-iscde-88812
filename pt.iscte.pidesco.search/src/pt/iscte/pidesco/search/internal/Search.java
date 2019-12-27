@@ -18,23 +18,26 @@ import pt.iscte.pidesco.projectbrowser.model.PackageElement.Visitor;
 
 public class Search {
 	
-	BundleContext context = Activator.getContext();
-	private boolean [] conditions;
+	private BundleContext context = Activator.getContext();
 	
-	public Search(boolean [] conditions) {
-		this.conditions = conditions;
-	}
+	private ServiceReference<ProjectBrowserServices> serviceReference = context.getServiceReference(ProjectBrowserServices.class);
+	private ProjectBrowserServices projectBrowserServices = context.getService(serviceReference);
 	
-	public void search() {
-
-		ServiceReference<ProjectBrowserServices> serviceReference = context.getServiceReference(ProjectBrowserServices.class);
-		ProjectBrowserServices projectBrowserServices = context.getService(serviceReference);
+	private PackageElement packageElement = projectBrowserServices.getRootPackage();	
+	
+	public void search(boolean [] conditions, String word, String packageItem) {
 		
-		PackageElement packageElement = projectBrowserServices.getRootPackage();		
-		
-		SearchVisitor searchVisitor = new SearchVisitor();	
+		SearchVisitor searchVisitor = new SearchVisitor(conditions, word, packageItem);	
 		packageElement.traverse(searchVisitor);
 		
-		SearchView.showTree(searchVisitor.getPackageClass());
+		SearchView.showTree(searchVisitor.pathClass, searchVisitor.packageClass, searchVisitor.types, searchVisitor.fileLines, searchVisitor.methods, searchVisitor.fields);
+	}
+	
+	public void getPackage() {
+
+		PackageVisitor packageVisitor = new PackageVisitor();	
+		packageElement.traverse(packageVisitor);
+		
+		SearchView.addItemsCombo(packageVisitor.packageClass);
 	}
 }
