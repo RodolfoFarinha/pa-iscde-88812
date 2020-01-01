@@ -22,8 +22,8 @@ public class SearchVisitor implements Visitor {
 	List<String> types = new ArrayList<String>();
 	List<String> fileLines = new ArrayList<String>();
 	List<String> methods = new ArrayList<String>();
-	List<String> fields = new ArrayList<String>();
-	
+	List<String> fields = new ArrayList<String>(); 
+			
 	public SearchVisitor(boolean[] conditions, String word, String packageItem) {
 		this.conditions = conditions;
 		this.word = word;
@@ -38,7 +38,7 @@ public class SearchVisitor implements Visitor {
 	@Override
 	public void visitClass(ClassElement classElement) {
 		
-		BundleContext context = Activator.getContext();
+		BundleContext context = SearchActivator.getContext();
 		ServiceReference<JavaEditorServices> serviceReference = context.getServiceReference(JavaEditorServices.class);
 		JavaEditorServices javaEditorServices = context.getService(serviceReference);
 		
@@ -47,6 +47,6 @@ public class SearchVisitor implements Visitor {
 		SearchAtsVisitor searchAtsVisitor = new SearchAtsVisitor(this, classElement, conditions, word, packageItem);
 		searchAtsVisitor.readFile(file);
 		
-		javaEditorServices.parseFile(file, searchAtsVisitor);
+		javaEditorServices.parseFile(file, searchAtsVisitor);		
 	}
 }

@@ -28,7 +28,6 @@ public class SearchAtsVisitor extends ASTVisitor {
 	private SearchVisitor searchVisitor;
 	private ClassElement classElement;
 
-	
 	public SearchAtsVisitor(SearchVisitor searchvisitor, ClassElement classElement, boolean[] conditions, String word, String packageItem) {
 		this.searchVisitor = searchvisitor;
 		this.classElement = classElement;

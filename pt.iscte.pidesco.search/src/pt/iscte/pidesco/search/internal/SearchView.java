@@ -5,21 +5,15 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.LineNumberReader;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Scanner;
 
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -35,20 +29,25 @@ import org.osgi.framework.ServiceReference;
 
 import pt.iscte.pidesco.extensibility.PidescoView;
 import pt.iscte.pidesco.javaeditor.service.JavaEditorServices;
-import pt.iscte.pidesco.projectbrowser.model.PackageElement;
-import pt.iscte.pidesco.projectbrowser.service.ProjectBrowserServices;
+import pt.iscte.pidesco.outline.internal.OutlineservicesImpl;
+import pt.iscte.pidesco.outline.service.OutlineServices;
+import pt.iscte.pidesco.search.service.SearchServices;
+
 
 public class SearchView implements PidescoView {
-
+		
 	private Search search = new Search();
 	private static Tree tree;
-	private static Combo fileName;
 	private static Image searchIcon, packageIcon, classIcon, folderIcon, lineIcon;
 	private static String pathName, packageName, itemName, className;
 	private static List<String> pathClass, packageClass, types, fileLines, methods, fields;
 	private static TreeItem searchItem;
 	private static boolean treeBool;
 	private static int i;
+	
+	static Text searchBar;
+	static Combo fileName;
+	static Button caseSensitive, equals, contains, startsWith, endsWith, allFile, type, method, field;
 
 	@Override
 	public void createContents(Composite viewArea, Map<String, Image> imageMap) {
@@ -67,10 +66,10 @@ public class SearchView implements PidescoView {
 		searchBarTitle.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, false, 6, 1));
 		searchBarTitle.setText("Search Bar");
 
-		Text searchBar = new Text(viewArea, SWT.BORDER);
+		searchBar = new Text(viewArea, SWT.BORDER);
 		searchBar.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 6, 1));
 
-		Button caseSensitive = new Button(viewArea, SWT.CHECK);
+		caseSensitive = new Button(viewArea, SWT.CHECK);
 		caseSensitive.setText("Case Sensitive");
 
 		space = new Label(viewArea, SWT.NONE);
@@ -79,18 +78,18 @@ public class SearchView implements PidescoView {
 		composite0.setLayout(new GridLayout(4, false));
 		composite0.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 4, 1));
 
-		Button equals = new Button(composite0, SWT.CHECK);
+		equals = new Button(composite0, SWT.CHECK);
 		equals.setText(" Equals  ");
 		equals.setSelection(true);
 		caseSensitive.setSelection(true);
 		
-		Button contains = new Button(composite0, SWT.CHECK);
+		contains = new Button(composite0, SWT.CHECK);
 		contains.setText(" Contains  ");
 
-		Button startsWith = new Button(composite0, SWT.CHECK);
+		startsWith = new Button(composite0, SWT.CHECK);
 		startsWith.setText(" Starts With  ");
 
-		Button endsWith = new Button(composite0, SWT.CHECK);
+		endsWith = new Button(composite0, SWT.CHECK);
 		endsWith.setText(" Ends With");
 		
 		caseSensitive.addSelectionListener(new SelectionAdapter() {
@@ -160,16 +159,16 @@ public class SearchView implements PidescoView {
 		composite1.setLayout(new GridLayout(6, false));
 		composite1.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 4, 1));
 
-		Button allFile = new Button(composite1, SWT.CHECK);
+		allFile = new Button(composite1, SWT.CHECK);
 		allFile.setText(" All File  ");
 		
-		Button type = new Button(composite1, SWT.CHECK);
+		type = new Button(composite1, SWT.CHECK);
 		type.setText(" Type  ");
 
-		Button method = new Button(composite1, SWT.CHECK);
+		method = new Button(composite1, SWT.CHECK);
 		method.setText(" Method  ");
 
-		Button field = new Button(composite1, SWT.CHECK);
+		field = new Button(composite1, SWT.CHECK);
 		field.setText(" Field");
 
 		allFile.addSelectionListener(new SelectionAdapter() {
@@ -246,6 +245,16 @@ public class SearchView implements PidescoView {
 				conditions[8] = field.getSelection();
 			
 				search.search(conditions, word, packageItem);
+					
+				if(conditions[7]) {
+					if(!methods.isEmpty()) {
+						for(String methodname : methods) {
+							OutlineServices os = new OutlineservicesImpl();
+							methodname = methodname.substring(methodname.indexOf(" - ")+3);				
+							os.highlightText(methodname);
+						}
+					}
+				}
 			}
 		});
 
@@ -254,6 +263,12 @@ public class SearchView implements PidescoView {
 				tree.removeAll();
 				fileName.setText("");
 				searchBar.setText("");
+							
+				BundleContext context = SearchActivator.getContext();
+				ServiceReference<SearchServices> serviceReference = context.getServiceReference(SearchServices.class);
+				SearchServices searchServices = context.getService(serviceReference);
+				
+				searchServices.searchContains(search.getPackageElement(), "A", "",true,true,true);
 			}
 		});
 
@@ -270,7 +285,7 @@ public class SearchView implements PidescoView {
 						TreeItem treeFolder = treeItems[0].getParentItem();
 						TreeItem treeClass = treeFolder.getParentItem();
 						
-						BundleContext context = Activator.getContext();
+						BundleContext context = SearchActivator.getContext();
 						ServiceReference<JavaEditorServices> serviceReference = context.getServiceReference(JavaEditorServices.class);
 						JavaEditorServices javaEditorServices = context.getService(serviceReference);
 						
