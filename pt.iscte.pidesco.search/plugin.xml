@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.4"?>
 <plugin>
+   <extension-point id="refactor" name="Search Refactor" schema="schema/pt.iscte.pidesco.refactor.exsd"/>
    <extension
          id="search"
          name="Search"
@@ -10,5 +11,4 @@
             icon="find_obj.gif">
       </view>
    </extension>
-
 </plugin>

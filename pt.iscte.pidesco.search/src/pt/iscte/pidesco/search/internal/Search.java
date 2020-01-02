@@ -1,22 +1,9 @@
 package pt.iscte.pidesco.search.internal;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-
-import org.eclipse.core.runtime.Assert;
-import org.eclipse.jdt.core.dom.ASTVisitor;
-import org.eclipse.jdt.core.dom.FieldDeclaration;
-import org.eclipse.jdt.core.dom.VariableDeclarationFragment;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
-
-import pt.iscte.pidesco.javaeditor.service.JavaEditorServices;
 import pt.iscte.pidesco.projectbrowser.service.ProjectBrowserServices;
-import pt.iscte.pidesco.search.service.SearchServices;
-import pt.iscte.pidesco.projectbrowser.model.ClassElement;
 import pt.iscte.pidesco.projectbrowser.model.PackageElement;
-import pt.iscte.pidesco.projectbrowser.model.PackageElement.Visitor;
 
 public class Search {
 	
@@ -44,6 +31,4 @@ public class Search {
 		
 		SearchView.addItemsCombo(packageVisitor.packageClass);
 	}
-	
-	
 }

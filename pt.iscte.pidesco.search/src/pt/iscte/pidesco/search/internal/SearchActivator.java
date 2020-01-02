@@ -16,7 +16,6 @@ import pt.iscte.pidesco.search.service.SearchServices;
 public class SearchActivator implements BundleActivator {
 
 	private static SearchActivator instance;
-	//private Set<ProjectBrowserListener> listeners;
 	private ServiceRegistration<SearchServices> service;
 	private PidescoServices pidescoServices;
 	
@@ -30,7 +29,6 @@ public class SearchActivator implements BundleActivator {
 	public void start(BundleContext bundleContext) throws Exception {
 		SearchActivator.context = bundleContext;		
 		instance = this;
-		//listeners = new HashSet<>();
 		service = context.registerService(SearchServices.class, new SearchServicesImpl(), null);
 
 		ServiceReference<PidescoServices> ref = context.getServiceReference(PidescoServices.class);

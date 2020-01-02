@@ -31,6 +31,7 @@ import pt.iscte.pidesco.extensibility.PidescoView;
 import pt.iscte.pidesco.javaeditor.service.JavaEditorServices;
 import pt.iscte.pidesco.outline.internal.OutlineservicesImpl;
 import pt.iscte.pidesco.outline.service.OutlineServices;
+import pt.iscte.pidesco.search.extensibility.SearchRefactor;
 import pt.iscte.pidesco.search.service.SearchServices;
 
 
@@ -48,7 +49,7 @@ public class SearchView implements PidescoView {
 	static Text searchBar;
 	static Combo fileName;
 	static Button caseSensitive, equals, contains, startsWith, endsWith, allFile, type, method, field;
-
+	
 	@Override
 	public void createContents(Composite viewArea, Map<String, Image> imageMap) {
 
