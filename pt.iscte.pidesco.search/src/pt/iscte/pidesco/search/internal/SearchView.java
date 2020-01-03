@@ -9,6 +9,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.core.runtime.IExtension;
+import org.eclipse.core.runtime.IExtensionRegistry;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
@@ -31,11 +34,13 @@ import pt.iscte.pidesco.extensibility.PidescoView;
 import pt.iscte.pidesco.javaeditor.service.JavaEditorServices;
 import pt.iscte.pidesco.outline.internal.OutlineservicesImpl;
 import pt.iscte.pidesco.outline.service.OutlineServices;
-import pt.iscte.pidesco.search.extensibility.SearchRefactor;
+import pt.iscte.pidesco.search.extensibility.SearchReplace;
 import pt.iscte.pidesco.search.service.SearchServices;
 
 
 public class SearchView implements PidescoView {
+	
+	private static final String EXT_POINT_REPLACE = "pt.iscte.pidesco.search.replace";
 		
 	private Search search = new Search();
 	private static Tree tree;
@@ -246,7 +251,8 @@ public class SearchView implements PidescoView {
 				conditions[8] = field.getSelection();
 			
 				search.search(conditions, word, packageItem);
-					
+				
+				// Outline Service highlightText
 				if(conditions[7]) {
 					if(!methods.isEmpty()) {
 						for(String methodname : methods) {
@@ -256,6 +262,23 @@ public class SearchView implements PidescoView {
 						}
 					}
 				}
+				
+				// Search extension point
+				IExtensionRegistry reg = Platform.getExtensionRegistry();
+				for(IExtension ext : reg.getExtensionPoint(EXT_POINT_REPLACE).getExtensions()) {
+					SearchReplace searchReplace = null;
+					try {
+						searchReplace = (SearchReplace) ext.getConfigurationElements()[0].createExecutableExtension("class");
+
+					} catch (Exception e1) {
+						e1.printStackTrace();
+					}
+					if(searchReplace != null && searchReplace.getFileReplace() != null  && searchReplace.getNewString() != null) {
+						searchReplace.search(word);
+						Replace replace = new Replace();
+						replace.replace(searchReplace.getFileReplace(), word, searchReplace.getNewString());
+					}
+				}	
 			}
 		});
 
@@ -264,12 +287,6 @@ public class SearchView implements PidescoView {
 				tree.removeAll();
 				fileName.setText("");
 				searchBar.setText("");
-							
-				BundleContext context = SearchActivator.getContext();
-				ServiceReference<SearchServices> serviceReference = context.getServiceReference(SearchServices.class);
-				SearchServices searchServices = context.getService(serviceReference);
-				
-				searchServices.searchContains(search.getPackageElement(), "A", "",true,true,true);
 			}
 		});
 

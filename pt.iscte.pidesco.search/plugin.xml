@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.4"?>
 <plugin>
-   <extension-point id="refactor" name="Search Refactor" schema="schema/pt.iscte.pidesco.refactor.exsd"/>
+   <extension-point id="replace" name="Search Replace" schema="schema/pt.iscte.pidesco.replace.exsd"/>
    <extension
          id="search"
          name="Search"

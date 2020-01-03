@@ -6,12 +6,11 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 
-import pt.iscte.pidesco.search.extensibility.SearchRefactor;
+import pt.iscte.pidesco.search.extensibility.SearchReplace;
 
-public class Refactor implements SearchRefactor {
+public class Replace {
 
-	@Override
-	public void readUpadteFile(File file, String oldString, String newString) {
+	public void replace(File file, String oldString, String newString) {
 
 		File fileToBeModified = file;
 		String oldContent = "";
@@ -35,9 +34,7 @@ public class Refactor implements SearchRefactor {
 			e.printStackTrace();
 		} finally {
 			try {
-
 				reader.close();
-
 				writer.close();
 			} catch (IOException e) {
 				e.printStackTrace();
