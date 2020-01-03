@@ -52,7 +52,7 @@
          <attribute name="class" type="string" use="required">
             <annotation>
                <documentation>
-                  
+                  SearchReplace class for search and replace a string in files.
                </documentation>
                <appinfo>
                   <meta.attribute kind="java" basedOn=":pt.iscte.pidesco.search.extensibility.SearchReplace"/>
