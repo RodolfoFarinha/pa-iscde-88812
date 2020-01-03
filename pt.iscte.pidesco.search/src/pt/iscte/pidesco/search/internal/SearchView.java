@@ -46,7 +46,6 @@ public class SearchView implements PidescoView {
 	private static Tree tree;
 	private static Image searchIcon, packageIcon, classIcon, folderIcon, lineIcon;
 	private static String pathName, packageName, itemName, className;
-	private static List<String> pathClass, packageClass, types, fileLines, methods, fields;
 	private static TreeItem searchItem;
 	private static boolean treeBool;
 	private static int i;
@@ -54,6 +53,7 @@ public class SearchView implements PidescoView {
 	static Text searchBar;
 	static Combo fileName;
 	static Button caseSensitive, equals, contains, startsWith, endsWith, allFile, type, method, field;
+	static List<String> pathClass, packageClass, types, fileLines, methods, fields;
 	
 	@Override
 	public void createContents(Composite viewArea, Map<String, Image> imageMap) {
@@ -273,8 +273,9 @@ public class SearchView implements PidescoView {
 					} catch (Exception e1) {
 						e1.printStackTrace();
 					}
-					if(searchReplace != null && searchReplace.getFileReplace() != null  && searchReplace.getNewString() != null) {
-						searchReplace.search(word);
+					
+					searchReplace.search(word);
+					if(searchReplace != null && searchReplace.getFileReplace() != null  && searchReplace.getNewString() != null) {	
 						Replace replace = new Replace();
 						replace.replace(searchReplace.getFileReplace(), word, searchReplace.getNewString());
 					}

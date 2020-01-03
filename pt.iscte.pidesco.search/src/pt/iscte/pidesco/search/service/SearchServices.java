@@ -2,9 +2,11 @@ package pt.iscte.pidesco.search.service;
 
 import java.io.File;
 import java.util.HashMap;
+import java.util.List;
 
 import pt.iscte.pidesco.projectbrowser.model.ClassElement;
 import pt.iscte.pidesco.projectbrowser.model.PackageElement;
+import pt.iscte.pidesco.search.internal.SearchView;
 
 /**
  * Services offered by the Search component.
@@ -114,6 +116,19 @@ public interface SearchServices {
 	/**
 	 * Search to get lines number of methods and fields from class.
 	 * @param classElement (non-null) classElement to get lines
+	 * @return HashMap of all methods and fields from class where first string is lineNumber "Line: XX" and second string is method/field name
 	 */
 	HashMap<String, String> getClassLines (ClassElement classElement);
+	
+	/**
+	 * Search to get lines number of all methods.
+	 * @return List of strings with all fields in formart "class::Line XX - methoddName" where '::' and ' - ' use as delimiter
+	 */
+	List<String> getMethodLines();
+	
+	/**
+	 * Search to get lines number of all fields.
+	 * @return List of strings with all fields in formart "class::Line XX - fieldName" where '::' and ' - ' use as delimiter
+	 */
+	List<String> getFieldsLines();
 }

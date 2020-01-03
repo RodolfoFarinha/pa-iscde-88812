@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.LineNumberReader;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Scanner;
 
 import org.eclipse.core.runtime.Assert;
@@ -321,5 +322,14 @@ public class SearchServicesImpl implements SearchServices {
 		
 		return getClassLines;
 	}
-
+	
+	@Override
+	public List<String> getMethodLines(){
+		return SearchView.methods;
+	}
+	
+	@Override
+	public List<String> getFieldsLines(){
+		return SearchView.fields;
+	}
 }
