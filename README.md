@@ -4,7 +4,7 @@ The Search component is a plugin built into the Pidesco project. As its main fea
 [View more about Plugin Operation](https://github.com/RodolfoFarinha/pa-iscde-88812/wiki/Plugin-Operantion)
 
 # Services
-The plugin provides a series of services capable of searching through other components, based on some criteria, later showing the results in its tree, located in its graphical interface.
+The plug-in provides a number of services that can search for references based on some criteria and then display the results in a tree located in the lower right corner of the plugin's graphical interface.
 
 [View more about Plugin Services](https://github.com/RodolfoFarinha/pa-iscde-88812/wiki/Plugin-Services)
 
