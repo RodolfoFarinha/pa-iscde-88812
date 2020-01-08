@@ -122,13 +122,13 @@ public interface SearchServices {
 	
 	/**
 	 * Search to get lines number of all methods.
-	 * @return List of strings with all fields in formart "class::Line XX - methoddName" where '::' and ' - ' use as delimiter
+	 * @return List of strings with all fields in format "class::Line XX - methoddName" where '::' and ' - ' use as delimiter
 	 */
 	List<String> getMethodLines();
 	
 	/**
 	 * Search to get lines number of all fields.
-	 * @return List of strings with all fields in formart "class::Line XX - fieldName" where '::' and ' - ' use as delimiter
+	 * @return List of strings with all fields in format "class::Line XX - fieldName" where '::' and ' - ' use as delimiter
 	 */
 	List<String> getFieldsLines();
 }

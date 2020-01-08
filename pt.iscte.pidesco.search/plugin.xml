@@ -11,4 +11,11 @@
             icon="find_obj.gif">
       </view>
    </extension>
+   <extension
+         id="fgfdh"
+         point="pt.iscte.pidesco.outline.highlight">
+      <highlight
+            class="pt.iscte.pidesco.search.internal.SearchView">
+      </highlight>
+   </extension>
 </plugin>

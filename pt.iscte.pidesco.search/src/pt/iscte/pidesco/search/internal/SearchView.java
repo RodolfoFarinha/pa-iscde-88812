@@ -1,6 +1,5 @@
 package pt.iscte.pidesco.search.internal;
 
-
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
@@ -32,13 +31,11 @@ import org.osgi.framework.ServiceReference;
 
 import pt.iscte.pidesco.extensibility.PidescoView;
 import pt.iscte.pidesco.javaeditor.service.JavaEditorServices;
+import pt.iscte.pidesco.outline.extensibility.GetStringHighlight;
 import pt.iscte.pidesco.outline.internal.OutlineservicesImpl;
-import pt.iscte.pidesco.outline.service.OutlineServices;
 import pt.iscte.pidesco.search.extensibility.SearchReplace;
-import pt.iscte.pidesco.search.service.SearchServices;
 
-
-public class SearchView implements PidescoView {
+public class SearchView implements PidescoView, GetStringHighlight {
 	
 	private static final String EXT_POINT_REPLACE = "pt.iscte.pidesco.search.replace";
 		
@@ -48,8 +45,9 @@ public class SearchView implements PidescoView {
 	private static String pathName, packageName, itemName, className;
 	private static TreeItem searchItem;
 	private static boolean treeBool;
+	private static boolean boolHighLight = false;
 	private static int i;
-	
+	private static String setHighLight = ".....................";
 	static Text searchBar;
 	static Combo fileName;
 	static Button caseSensitive, equals, contains, startsWith, endsWith, allFile, type, method, field;
@@ -73,6 +71,12 @@ public class SearchView implements PidescoView {
 				replace.replace(searchReplace.getFileReplace(), word, searchReplace.getNewString());
 			}
 		}	
+	}
+	
+	// Outline Extension Point set word to highlight
+	@Override
+	public String getStringHighlightText() {		
+		return setHighLight;
 	}
 	
 	@Override
@@ -271,17 +275,22 @@ public class SearchView implements PidescoView {
 				conditions[8] = field.getSelection();
 			
 				search.search(conditions, word, packageItem);
+
+				setHighLight = word;
+				
+				// Outline Extension Point highlightText
+				OutlineservicesImpl outlineservicesImpl = new OutlineservicesImpl();
 				
 				// Outline Service highlightText
-				if(conditions[7]) {
-					if(!methods.isEmpty()) {
-						for(String methodname : methods) {
-							OutlineServices os = new OutlineservicesImpl();
-							methodname = methodname.substring(methodname.indexOf(" - ")+3);				
-							os.highlightText(methodname);
-						}
-					}
-				}
+//				if(conditions[7]) {
+//					if(!methods.isEmpty()) {
+//						for(String methodname : methods) {
+//							OutlineServices os = new OutlineservicesImpl();
+//							methodname = methodname.substring(methodname.indexOf(" - ")+3);				
+//							os.highlightText(methodname);
+//						}
+//					}
+//				}
 				
 				IExtensionRegistry reg = Platform.getExtensionRegistry();
 				for(IExtension ext : reg.getExtensionPoint(EXT_POINT_REPLACE).getExtensions()) {
