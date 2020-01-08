@@ -55,6 +55,26 @@ public class SearchView implements PidescoView {
 	static Button caseSensitive, equals, contains, startsWith, endsWith, allFile, type, method, field;
 	static List<String> pathClass, packageClass, types, fileLines, methods, fields;
 	
+	public SearchView() {
+		
+	}
+	
+	public SearchView(String word) {
+		IExtensionRegistry reg = Platform.getExtensionRegistry();
+		for(IExtension ext : reg.getExtensionPoint(EXT_POINT_REPLACE).getExtensions()) {
+			SearchReplace searchReplace = null;
+			try {
+				searchReplace = (SearchReplace) ext.getConfigurationElements()[0].createExecutableExtension("class");
+			} catch (Exception e) {
+				e.printStackTrace();
+			}		
+			if(searchReplace != null && searchReplace.getFileReplace() != null  && searchReplace.getNewString() != null) {	
+				Replace replace = new Replace();
+				replace.replace(searchReplace.getFileReplace(), word, searchReplace.getNewString());
+			}
+		}	
+	}
+	
 	@Override
 	public void createContents(Composite viewArea, Map<String, Image> imageMap) {
 
@@ -233,7 +253,7 @@ public class SearchView implements PidescoView {
 		searchButton.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 
-				tree.removeAll();
+				cleanAll();
 				
 				boolean[] conditions = new boolean[9];
 				
@@ -263,21 +283,16 @@ public class SearchView implements PidescoView {
 					}
 				}
 				
-				// Search extension point
 				IExtensionRegistry reg = Platform.getExtensionRegistry();
 				for(IExtension ext : reg.getExtensionPoint(EXT_POINT_REPLACE).getExtensions()) {
 					SearchReplace searchReplace = null;
 					try {
 						searchReplace = (SearchReplace) ext.getConfigurationElements()[0].createExecutableExtension("class");
-
 					} catch (Exception e1) {
 						e1.printStackTrace();
 					}
-					
-					searchReplace.search(word);
-					if(searchReplace != null && searchReplace.getFileReplace() != null  && searchReplace.getNewString() != null) {	
-						Replace replace = new Replace();
-						replace.replace(searchReplace.getFileReplace(), word, searchReplace.getNewString());
+					if(searchReplace != null) {	
+						searchReplace.search(word);
 					}
 				}	
 			}
@@ -285,7 +300,7 @@ public class SearchView implements PidescoView {
 
 		clearButton.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
-				tree.removeAll();
+				cleanAll();
 				fileName.setText("");
 				searchBar.setText("");
 			}
@@ -333,6 +348,10 @@ public class SearchView implements PidescoView {
 				}
 			}
 		});
+	}
+	
+	public static void cleanAll() {
+		tree.removeAll();	
 	}
 	
 	public static void addItemsCombo(List<String> packageClassList) {	

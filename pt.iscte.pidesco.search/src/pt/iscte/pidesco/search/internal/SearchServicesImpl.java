@@ -42,6 +42,7 @@ public class SearchServicesImpl implements SearchServices {
 		SearchVisitor searchVisitor = new SearchVisitor(conditions, word, packageItem);	
 		packageElement.traverse(searchVisitor);
 		
+		SearchView.cleanAll();
 		SearchView.showTree(searchVisitor.pathClass, searchVisitor.packageClass, searchVisitor.types, searchVisitor.fileLines, searchVisitor.methods, searchVisitor.fields);
 	}
 	
@@ -69,6 +70,7 @@ public class SearchServicesImpl implements SearchServices {
 		SearchVisitor searchVisitor = new SearchVisitor(conditions, word, packageItem);	
 		packageElement.traverse(searchVisitor);
 		
+		SearchView.cleanAll();
 		SearchView.showTree(searchVisitor.pathClass, searchVisitor.packageClass, searchVisitor.types, searchVisitor.fileLines, searchVisitor.methods, searchVisitor.fields);
 	}
 	
@@ -96,6 +98,7 @@ public class SearchServicesImpl implements SearchServices {
 		SearchVisitor searchVisitor = new SearchVisitor(conditions, word, packageItem);	
 		packageElement.traverse(searchVisitor);
 		
+		SearchView.cleanAll();
 		SearchView.showTree(searchVisitor.pathClass, searchVisitor.packageClass, searchVisitor.types, searchVisitor.fileLines, searchVisitor.methods, searchVisitor.fields);
 	}
 	
@@ -123,6 +126,7 @@ public class SearchServicesImpl implements SearchServices {
 		SearchVisitor searchVisitor = new SearchVisitor(conditions, word, packageItem);	
 		packageElement.traverse(searchVisitor);
 		
+		SearchView.cleanAll();
 		SearchView.showTree(searchVisitor.pathClass, searchVisitor.packageClass, searchVisitor.types, searchVisitor.fileLines, searchVisitor.methods, searchVisitor.fields);
 	}
 	
@@ -177,6 +181,7 @@ public class SearchServicesImpl implements SearchServices {
 		SearchVisitor searchVisitor = new SearchVisitor(conditions, word, packageItem);	
 		packageElement.traverse(searchVisitor);
 		
+		SearchView.cleanAll();
 		SearchView.showTree(searchVisitor.pathClass, searchVisitor.packageClass, searchVisitor.types, searchVisitor.fileLines, searchVisitor.methods, searchVisitor.fields);
 	}
 	
@@ -204,6 +209,7 @@ public class SearchServicesImpl implements SearchServices {
 		SearchVisitor searchVisitor = new SearchVisitor(conditions, word, packageItem);	
 		packageElement.traverse(searchVisitor);
 		
+		SearchView.cleanAll();
 		SearchView.showTree(searchVisitor.pathClass, searchVisitor.packageClass, searchVisitor.types, searchVisitor.fileLines, searchVisitor.methods, searchVisitor.fields);
 	}
 	
@@ -231,6 +237,7 @@ public class SearchServicesImpl implements SearchServices {
 		SearchVisitor searchVisitor = new SearchVisitor(conditions, word, packageItem);	
 		packageElement.traverse(searchVisitor);
 		
+		SearchView.cleanAll();
 		SearchView.showTree(searchVisitor.pathClass, searchVisitor.packageClass, searchVisitor.types, searchVisitor.fileLines, searchVisitor.methods, searchVisitor.fields);
 	}
 	
@@ -258,6 +265,7 @@ public class SearchServicesImpl implements SearchServices {
 		SearchVisitor searchVisitor = new SearchVisitor(conditions, word, packageItem);	
 		packageElement.traverse(searchVisitor);
 		
+		SearchView.cleanAll();
 		SearchView.showTree(searchVisitor.pathClass, searchVisitor.packageClass, searchVisitor.types, searchVisitor.fileLines, searchVisitor.methods, searchVisitor.fields);
 	}
 	
@@ -285,6 +293,7 @@ public class SearchServicesImpl implements SearchServices {
 		SearchVisitor searchVisitor = new SearchVisitor(conditions, word, packageItem);	
 		packageElement.traverse(searchVisitor);
 		
+		SearchView.cleanAll();
 		SearchView.showTree(searchVisitor.pathClass, searchVisitor.packageClass, searchVisitor.types, searchVisitor.fileLines, searchVisitor.methods, searchVisitor.fields);
 	}
 	

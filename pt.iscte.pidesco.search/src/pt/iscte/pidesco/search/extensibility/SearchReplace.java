@@ -24,5 +24,4 @@ public interface SearchReplace {
 	 * @return string to replace method
 	 */
 	String getNewString();
-
 }
