@@ -1,5 +1,5 @@
 # Search
-The Search component is a plugin built into the Pidesco project. As its main feature, search aims to find and refold the searched references, while browsing packages
+The "SEARCH" component is a plug-in built into the "PIDESCO" project. Its main purpose is to search for user-entered references by returning a result tree according to the defined conditions.
 
 [View more about Plugin Operation](https://github.com/RodolfoFarinha/pa-iscde-88812/wiki/Plugin-Operantion)
 
